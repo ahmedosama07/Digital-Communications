@@ -1,5 +1,5 @@
 function Plotting(Mod_Unipolar_NRZ, Mod_Polar_NRZ, Mod_Bipolar_NRZ, Mod_MLT3, Mod_Unipolar_RZ, Mod_Polar_RZ, Mod_Bipolar_RZ, Mod_Manchester_UTD);
-
+%Function plotting All outputs of line code modulation in one window 
     figure;
     titles = {'UnipolarNRZ', 'PolarNRZ', 'BipolarNRZ', 'MLT3', 'UnipolarRZ', 'PolarRZ', 'BipolarRZ', 'Manchester'};
     arrays = {Mod_Unipolar_NRZ, Mod_Polar_NRZ, Mod_Bipolar_NRZ, Mod_MLT3, Mod_Unipolar_RZ, Mod_Polar_RZ, Mod_Bipolar_RZ, Mod_Manchester_UTD};

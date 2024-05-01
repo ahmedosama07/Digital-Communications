@@ -1,5 +1,5 @@
 function PlotPSD(all_PSD,all_freq);
-   
+ %Function that Plot all PSD in one window
     figure;
     titles = {'UnipolarNRZ', 'PolarNRZ', 'BipolarNRZ', 'MLT3', 'UnipolarRZ', 'PolarRZ', 'BipolarRZ', 'Manchester'}; 
     for i = 1:8
