@@ -8,6 +8,7 @@ t = linspace(0, T, Fs*length(bits));
 waveform = zeros(1, length(t));
 prev = 1;
 dir = -1;
+val = 0;
 for i = 0: length(bits)- 1
     if bits(i+1) == 1
         waveform((i*Fs)+1 : (i+1)*Fs) = prev;
@@ -16,7 +17,10 @@ for i = 0: length(bits)- 1
             dir = -dir;
         end
     else
-        waveform((i*Fs)+1 : (i+1)*Fs) = waveform(i*Fs);
+        if i > 0
+            val = waveform(i*Fs);
+        end
+        waveform((i*Fs)+1 : (i+1)*Fs) = val;
     end
 end
 end
