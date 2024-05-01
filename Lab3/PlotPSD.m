@@ -9,7 +9,7 @@ function PlotPSD(all_PSD,all_freq);
         current_array = all_PSD{i};
         
         current_frequency=all_freq{i};
-        plot(current_frequency,10 * log10(current_array)); 
+        plot(current_frequency,current_array); 
         
         title(titles{i});
     end
