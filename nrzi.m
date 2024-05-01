@@ -11,7 +11,7 @@ for i = 1: length(bits) - 1
     if bits(i+1) == 1
         waveform((i*Fs)+1 : (i+1)*Fs) = -waveform(i*Fs);
     else
-        waveform((i*Fs)+1 : (i+1)*Fs) = waveform(i*Fs);;
+        waveform((i*Fs)+1 : (i+1)*Fs) = waveform(i*Fs);
     end
 end
 end
