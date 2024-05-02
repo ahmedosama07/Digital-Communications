@@ -1,7 +1,16 @@
 function [waveform, t, psd, f] = ami(bits, bitrate)
-%ami Summary of this function goes here
-%   Function generates waveform for Alternative mark inversion (AMI) line 
-%   coding technique.
+% ami generates waveform for Alternative Mark Inversion (AMI) line coding technique.
+% 
+% Inputs:
+%   - bits: binary input sequence
+%   - bitrate: bitrate of the signal
+% 
+% Outputs:
+%   - waveform: AMI waveform
+%   - t: time vector for the waveform
+%   - psd: power spectral density of the waveform
+%   - f: frequency vector corresponding to the psd
+
 Fs = 100;
 T = length(bits)/bitrate;
 t = linspace(0, T, Fs*length(bits));

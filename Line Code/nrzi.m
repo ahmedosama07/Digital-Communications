@@ -1,7 +1,16 @@
 function [waveform, t, psd, f] = nrzi(bits, bitrate)
-%nrzi Summary of this function goes here
-%   Function generates waveform for polar non return to zero inverted line 
-%   coding technique.
+% nrzi generates waveform for Polar Non-Return-to-Zero Inverted (NRZI) line coding technique.
+% 
+% Inputs:
+%   - bits: binary input sequence
+%   - bitrate: bitrate of the signal
+% 
+% Outputs:
+%   - waveform: NRZI waveform
+%   - t: time vector for the waveform
+%   - psd: power spectral density of the waveform
+%   - f: frequency vector corresponding to the psd
+
 Fs = 100;
 T = length(bits)/bitrate;
 t = linspace(0, T, Fs*length(bits));

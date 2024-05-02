@@ -1,7 +1,16 @@
 function [waveform, t, psd, f] = mlt3(bits, bitrate)
-%mlt3 Summary of this function goes here
-%   Function generates waveform for Multi-level transmission 3(MLT-3) line 
-%   coding technique.
+% mlt3 generates waveform for Multi-Level Transmission 3 (MLT-3) line coding technique.
+% 
+% Inputs:
+%   - bits: binary input sequence
+%   - bitrate: bitrate of the signal
+% 
+% Outputs:
+%   - waveform: MLT-3 waveform
+%   - t: time vector for the waveform
+%   - psd: power spectral density of the waveform
+%   - f: frequency vector corresponding to the psd
+
 Fs = 100;
 T = length(bits)/bitrate;
 t = linspace(0, T, Fs*length(bits));
