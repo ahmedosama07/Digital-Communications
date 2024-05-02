@@ -1,72 +1,118 @@
-SNR=[0 : 2 : 30];
-m = 20;
-T = 20;
+N = 10;
+%bits = randi([0, 1], 1, N);
+bits = [0,1,0,1,0,1,0,1,0,1];
+%bits = [1 0 1 0 0 1 1 1 0 0 1];
+bitrate = 1;
 
-s1 = ones(1, m);
-s2 = zeros(1, m);
-matchedFilter = s1 - s2;
-matchedFilter = matchedFilter(end:-1:1); 
-
-n = 10e6;
-num_bits = n / 20;
-
-waveform = zeros(1, n);
-bit_seq = randi([0, 1], 1, num_bits);
-
-for i = 0 : num_bits - 1
-    if bit_seq(i + 1) == 1
-       waveform(i * m + 1 : (i + 1) * m) = s1;
-    else
-       waveform(i * m + 1 : (i + 1) * m) = s2;
-    end
-end
+[waveform_nrz, t_nrz, psd_nrz, f_nrz] = nrz(bits, bitrate);
+[waveform_nrzi, t_nrzi, psd_nrzi, f_nrzi] = nrzi(bits, bitrate);
+[waveform_rz, t_rz, psd_rz, f_rz] = rz(bits, bitrate);
+[waveform_ami, t_ami, psd_ami, f_ami] = ami(bits, bitrate);
+[waveform_manchester, t_manchester, psd_manchester, f_manchester] = manchester(bits, bitrate);
+[waveform_mlt3, t_mlt3, psd_mlt3, f_mlt3] = mlt3(bits, bitrate);
 
 
-signalPower = sum(waveform.^2) / n;
+figure(1);
+subplot(6, 1, 1);
+plot(t_nrz, waveform_nrz, 'LineWidth', 3);
+axis([0 t_nrz(end) min(waveform_nrz)-0.1 max(waveform_nrz)+0.1]);
+grid on;
+title(['Polar NRZ: [' num2str(bits) ']']);
+xlabel('time (s))');
+ylabel('level');
 
-for k = 1 : length(SNR)
-    noisePower = signalPower / (10 ^ (SNR(k) / 10));
-    noiseSignal = sqrt(noisePower) * randn(size(waveform));
-    Rx_sequence = waveform + noiseSignal;
-   
-    %SIMPLE 
-    simple_Rx = simple_receiver(Rx_sequence, m, mean(Rx_sequence), T);
+subplot(6, 1, 2);
+plot(t_nrzi, waveform_nrzi, 'LineWidth', 3);
+axis([0 t_nrzi(end) min(waveform_nrzi)-0.1 max(waveform_nrzi)+0.1]);
+grid on;
+title(['Polar NRZI: [' num2str(bits) ']']);
+xlabel('time (s))');
+ylabel('level');
 
-    BER_simple(k) = ComputeBER(bit_seq, simple_Rx);
-    
-    %MATCHED FILTER
-    MF_Rx = MF_Receiver(Rx_sequence, s1, s2, num_bits, matchedFilter, m, T);
+subplot(6, 1, 3);
+plot(t_rz, waveform_rz, 'LineWidth', 3);
+axis([0 t_rz(end) min(waveform_rz)-0.1 max(waveform_rz)+0.1]);
+grid on;
+title(['Polar RZ: [' num2str(bits) ']']);
+xlabel('time (s))');
+ylabel('level');
 
-    BER_MF(k) = ComputeBER(bit_seq, MF_Rx);
+subplot(6, 1, 4);
+plot(t_ami, waveform_ami, 'LineWidth', 3);
+axis([0 t_ami(end) min(waveform_ami)-0.1 max(waveform_ami)+0.1]);
+grid on;
+title(['Alternative mark inversion (AMI): [' num2str(bits) ']']);
+xlabel('time (s))');
+ylabel('level');
 
-    %CORRELATOR
-    corr_Rx = zeros(1, num_bits);
+subplot(6, 1, 5);
+plot(t_manchester, waveform_manchester, 'LineWidth', 3);
+axis([0 t_manchester(end) min(waveform_manchester)-0.1 max(waveform_manchester)+0.1]);
+grid on;
+title(['Manchester coding: [' num2str(bits) ']']);
+xlabel('time (s))');
+ylabel('level');
 
-    corr_Rx = corr_receiver(Rx_sequence, m, matchedFilter);
+subplot(6, 1, 6);
+plot(t_mlt3, waveform_mlt3, 'LineWidth', 3);
+axis([0 t_mlt3(end) min(waveform_mlt3)-0.1 max(waveform_mlt3)+0.1]);
+grid on;
+title(['Multi-level transmission 3: [' num2str(bits) ']']);
+xlabel('time (s))');
+ylabel('level');
 
-    BER_corr(k) = ComputeBER(bit_seq, corr_Rx);
-end
 
-semilogy(SNR,BER_simple,'-o')
-xlabel('SNR (dB)')
-ylabel('BER')
-xlim([0 SNR(end)])
-ylim([0 0.5])
-title('Matched filter - Simple Receiver')
-hold on
 
-semilogy(SNR, BER_MF, '-o')
 
-hold off
-figure;
-semilogy(SNR,BER_simple,'-o')
-xlabel('SNR (dB)')
-ylabel('BER')
-xlim([0 SNR(end)])
-ylim([0 0.5])
-title('Correlator Recevier - Simple Receiver')
-hold on
 
-semilogy(SNR, BER_corr, '-o')
 
-hold off
+
+figure(2);
+subplot(6, 1, 1);
+plot(f_nrz, psd_nrz, 'LineWidth', 2);
+axis([f_nrz(1) f_nrz(end) min(psd_nrz)-10 max(psd_nrz)+10]);
+grid on;
+title(['Polar NRZ: [' num2str(bits) ']']);
+xlabel('frequency (Hz))');
+ylabel('power (dB)');
+
+subplot(6, 1, 2);
+plot(f_nrzi, psd_nrzi, 'LineWidth', 2);
+axis([f_nrzi(1) f_nrzi(end) min(psd_nrzi)-10 max(psd_nrzi)+10]);
+grid on;
+title(['Polar NRZI: [' num2str(bits) ']']);
+xlabel('frequency (Hz))');
+ylabel('power (dB)');
+
+subplot(6, 1, 3);
+plot(f_rz, psd_rz, 'LineWidth', 2);
+axis([f_rz(1) f_rz(end) min(psd_rz)-10 max(psd_rz)+10]);
+grid on;
+title(['Polar RZ: [' num2str(bits) ']']);
+xlabel('frequency (Hz))');
+ylabel('power (dB)');
+
+subplot(6, 1, 4);
+plot(f_ami, psd_ami, 'LineWidth', 2);
+axis([f_ami(1) f_ami(end) min(psd_ami)-10 max(psd_ami)+10]);
+grid on;
+title(['Alternative mark inversion (AMI): [' num2str(bits) ']']);
+xlabel('frequency (Hz))');
+ylabel('power (dB)');
+
+subplot(6, 1, 5);
+plot(f_manchester, psd_manchester, 'LineWidth', 2);
+axis([f_manchester(1) f_manchester(end) min(psd_manchester)-10 max(psd_manchester)+10]);
+grid on;
+title(['Manchester coding: [' num2str(bits) ']']);
+xlabel('frequency (Hz))');
+ylabel('power (dB)');
+
+subplot(6, 1, 6);
+plot(f_mlt3, psd_mlt3, 'LineWidth', 2);
+axis([f_mlt3(1) f_mlt3(end) min(psd_mlt3)-10 max(psd_mlt3)+10]);
+grid on;
+title(['Multi-level transmission 3: [' num2str(bits) ']']);
+xlabel('frequency (Hz))');
+ylabel('power (dB)');
+
