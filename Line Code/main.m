@@ -1,9 +1,13 @@
+% Define the number of bits
 N = 10;
-%bits = randi([0, 1], 1, N);
-bits = [0,1,0,1,0,1,0,1,0,1];
-%bits = [1 0 1 0 0 1 1 1 0 0 1];
+
+% Generate random bits (0s and 1s)
+bits = randi([0, 1], 1, N);
+
+% Set the bitrate
 bitrate = 1;
 
+% Perform different encoding schemes and store waveforms and spectra
 [waveform_nrz, t_nrz, psd_nrz, f_nrz] = nrz(bits, bitrate);
 [waveform_nrzi, t_nrzi, psd_nrzi, f_nrzi] = nrzi(bits, bitrate);
 [waveform_rz, t_rz, psd_rz, f_rz] = rz(bits, bitrate);
@@ -11,7 +15,7 @@ bitrate = 1;
 [waveform_manchester, t_manchester, psd_manchester, f_manchester] = manchester(bits, bitrate);
 [waveform_mlt3, t_mlt3, psd_mlt3, f_mlt3] = mlt3(bits, bitrate);
 
-
+% Plot waveforms for different encoding schemes
 figure(1);
 subplot(6, 1, 1);
 plot(t_nrz, waveform_nrz, 'LineWidth', 3);
@@ -61,12 +65,10 @@ title(['Multi-level transmission 3: [' num2str(bits) ']']);
 xlabel('time (s))');
 ylabel('level');
 
+saveas(gcf, '..\figures\line-code\line-codes.png');
 
 
-
-
-
-
+% Plot power spectral density (PSD) for different encoding schemes
 figure(2);
 subplot(6, 1, 1);
 plot(f_nrz, psd_nrz, 'LineWidth', 2);
@@ -115,4 +117,6 @@ grid on;
 title(['Multi-level transmission 3: [' num2str(bits) ']']);
 xlabel('frequency (Hz))');
 ylabel('power (dB)');
+
+saveas(gcf, '..\figures\line-code\psd.png');
 

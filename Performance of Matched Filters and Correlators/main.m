@@ -7,10 +7,11 @@ T = 20;           % Sampling instant =20
 s1 = ones(1, m);  % s1(t) is rectangular signal with Amp=1
 s2 = zeros(1, m); % s2(t) is zero signal.
 
-
+% Generate random bits for transmission
 nbits = 10e6;
 bits = randi([0, 1], 1, nbits/m);
 
+% Generate the waveform for transmission based on the random bits
 waveform = zeros(1, nbits);
 
 for i = 0 : length(bits) - 1
@@ -21,20 +22,26 @@ for i = 0 : length(bits) - 1
     end
 end
 
+% Calculate the average signal power
 signalPWR = mean(waveform .^ 2);
+
+% Initialize arrays to store bit error rates (BER)
 BER_mf = zeros(1, length(SNRRANGE));
 BER_corr = zeros(1, length(SNRRANGE));
 BER_simple = zeros(1, length(SNRRANGE));
 
+% Loop over different signal-to-noise ratios (SNRs)
 for i = 1 : length(SNRRANGE)
     snrdb  = SNRRANGE(i);
-    % Generate random binary data vector
-    snr = 10 ^ (snrdb / 10);             % SNR
-    noisePWR = sqrt(signalPWR / snr);    % Noise power
+
+    % Calculate SNR and noise power
+    snr = 10 ^ (snrdb / 10);                        % SNR
+    noisePWR = sqrt(signalPWR / snr);               % Noise power
     noise = noisePWR * randn(1, length(waveform));  % Noise vector
-    rx_sequence = waveform + noise;        % Apply noise to signal
+    rx_sequence = waveform + noise;                 % Apply noise to signal
     
     
+    % Receiver processing
     % Matched filter
     mf_output = matched_filter(rx_sequence, s1, s2, m, T, length(bits));
     [~, BER_mf(i)] = biterr(bits, mf_output);
@@ -49,6 +56,7 @@ for i = 1 : length(SNRRANGE)
     
 end
 
+% Plot results
 figure(1)
 subplot(2,1,1)
 semilogy(SNRRANGE,BER_simple,'-o')
@@ -75,3 +83,4 @@ grid on
 title('Correlator - Simple Receiver')
 legend('Simple filter', 'Correlator');
 hold off
+saveas(gcf, strcat('..\figures\performance-of-matched-filters-and-correlators\BER', num2str(m), 'samples', '.png'));
